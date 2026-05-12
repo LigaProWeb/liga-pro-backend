@@ -17,4 +17,6 @@ export class MatchesServiceController {
   findAll(): MatchDto[] {
     return this.matchesServiceService.findAll();
   }
+
+  //ENDPOINTS
 }
