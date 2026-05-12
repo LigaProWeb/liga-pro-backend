@@ -15,7 +15,7 @@ El objetivo del backend es trabajar con **Nest.js**, **TypeScript** y una arquit
 
 ## Idea general de arquitectura
 
-La idea es separar el backend en varias aplicaciones Nest dentro del mismo repo:
+La idea es separar el backend en varias aplicaciones Nest dentro del mismo repo:.
 
 ```txt
 Frontend Next.js
