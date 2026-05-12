@@ -1,8 +1,68 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/api-gateway/src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/api-gateway",
+  "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "contracts": {
+      "type": "library",
+      "root": "libs/contracts",
+      "entryFile": "index",
+      "sourceRoot": "libs/contracts/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/contracts/tsconfig.lib.json"
+      }
+    },
+    "matches-service": {
+      "type": "application",
+      "root": "apps/matches-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/matches-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/matches-service/tsconfig.app.json"
+      }
+    },
+    "notifications-service": {
+      "type": "application",
+      "root": "apps/notifications-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/notifications-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/notifications-service/tsconfig.app.json"
+      }
+    },
+    "tournaments-service": {
+      "type": "application",
+      "root": "apps/tournaments-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/tournaments-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/tournaments-service/tsconfig.app.json"
+      }
+    },
+    "users-service": {
+      "type": "application",
+      "root": "apps/users-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/users-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users-service/tsconfig.app.json"
+      }
+    }
   }
 }

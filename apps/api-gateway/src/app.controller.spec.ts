@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { MATCHES_SERVICE } from '@app/contracts';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -8,15 +9,23 @@ describe('AppController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        AppService,
+        {
+          provide: MATCHES_SERVICE,
+          useValue: {
+            send: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     appController = app.get<AppController>(AppController);
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return the gateway name', () => {
+      expect(appController.getHello()).toBe('Liga Pro API Gateway');
     });
   });
 });
