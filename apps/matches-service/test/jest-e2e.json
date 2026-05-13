@@ -5,5 +5,13 @@
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@app/contracts": "<rootDir>/../../../libs/contracts/src"
+  },
+  "globals": {
+    "ts-jest": {
+      "tsconfig": "apps/matches-service/test/tsconfig.e2e.json"
+    }
   }
 }
