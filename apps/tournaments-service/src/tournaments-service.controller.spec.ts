@@ -17,8 +17,8 @@ describe('TournamentsServiceController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(tournamentsServiceController.getHello()).toBe('Hello World!');
+    it('should start with no tournaments', () => {
+      expect(tournamentsServiceController.findAll()).toEqual([]);
     });
   });
 });
