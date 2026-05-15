@@ -1,7 +1,12 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { MATCHES_PATTERNS } from '@app/contracts';
-import type { CreateMatchDto, MatchDto, UpdateMatchDto, UpdateResultDto } from '@app/contracts';
+import type {
+  CreateMatchDto,
+  MatchDto,
+  UpdateMatchDto,
+  UpdateResultDto,
+} from '@app/contracts';
 import { MatchesServiceService } from './matches-service.service';
 
 @Controller()

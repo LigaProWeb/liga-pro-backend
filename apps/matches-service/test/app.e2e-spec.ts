@@ -8,7 +8,12 @@ import { ClientProxy, ClientProxyFactory } from '@nestjs/microservices';
 import { of } from 'rxjs';
 import { MatchesServiceModule } from './../src/matches-service.module';
 import { MATCHES_PATTERNS, NOTIFICATIONS_SERVICE } from '@app/contracts';
-import type { CreateMatchDto, MatchDto, UpdateMatchDto, UpdateResultDto } from '@app/contracts';
+import type {
+  CreateMatchDto,
+  MatchDto,
+  UpdateMatchDto,
+  UpdateResultDto,
+} from '@app/contracts';
 
 describe('MatchesServiceController (e2e)', () => {
   let app: INestApplication;
@@ -60,7 +65,9 @@ describe('MatchesServiceController (e2e)', () => {
       organizerId: 'user1',
     };
 
-    const match: MatchDto = await client.send(MATCHES_PATTERNS.CREATE, createDto).toPromise();
+    const match: MatchDto = await client
+      .send(MATCHES_PATTERNS.CREATE, createDto)
+      .toPromise();
 
     expect(match).toBeDefined();
     expect(match.id).toContain('match-');
@@ -69,7 +76,9 @@ describe('MatchesServiceController (e2e)', () => {
   });
 
   it('should find all matches', async () => {
-    const matches: MatchDto[] = await client.send(MATCHES_PATTERNS.FIND_ALL, {}).toPromise();
+    const matches: MatchDto[] = await client
+      .send(MATCHES_PATTERNS.FIND_ALL, {})
+      .toPromise();
 
     expect(Array.isArray(matches)).toBe(true);
   });
@@ -85,7 +94,9 @@ describe('MatchesServiceController (e2e)', () => {
       organizerId: 'user1',
     };
 
-    const match: MatchDto = await client.send(MATCHES_PATTERNS.CREATE, createDto).toPromise();
+    const match: MatchDto = await client
+      .send(MATCHES_PATTERNS.CREATE, createDto)
+      .toPromise();
 
     const updateDto: UpdateMatchDto = {
       id: match.id,
@@ -93,7 +104,9 @@ describe('MatchesServiceController (e2e)', () => {
       location: 'New Location',
     };
 
-    const updatedMatch: MatchDto = await client.send(MATCHES_PATTERNS.UPDATE, updateDto).toPromise();
+    const updatedMatch: MatchDto = await client
+      .send(MATCHES_PATTERNS.UPDATE, updateDto)
+      .toPromise();
 
     expect(updatedMatch.title).toBe('Updated Title');
     expect(updatedMatch.location).toBe('New Location');
@@ -110,15 +123,19 @@ describe('MatchesServiceController (e2e)', () => {
       organizerId: 'user1',
     };
 
-    const match: MatchDto = await client.send(MATCHES_PATTERNS.CREATE, createDto).toPromise();
+    const match: MatchDto = await client
+      .send(MATCHES_PATTERNS.CREATE, createDto)
+      .toPromise();
 
     // Delete it
     await client.send(MATCHES_PATTERNS.DELETE, match.id).toPromise();
 
     // Try to find all, should not include the deleted one
-    const matches: MatchDto[] = await client.send(MATCHES_PATTERNS.FIND_ALL, {}).toPromise();
+    const matches: MatchDto[] = await client
+      .send(MATCHES_PATTERNS.FIND_ALL, {})
+      .toPromise();
 
-    expect(matches.find(m => m.id === match.id)).toBeUndefined();
+    expect(matches.find((m) => m.id === match.id)).toBeUndefined();
   });
 
   it('should update result of a match', async () => {
@@ -132,7 +149,9 @@ describe('MatchesServiceController (e2e)', () => {
       organizerId: 'user1',
     };
 
-    const match: MatchDto = await client.send(MATCHES_PATTERNS.CREATE, createDto).toPromise();
+    const match: MatchDto = await client
+      .send(MATCHES_PATTERNS.CREATE, createDto)
+      .toPromise();
 
     const resultDto: UpdateResultDto = {
       id: match.id,
@@ -140,7 +159,9 @@ describe('MatchesServiceController (e2e)', () => {
       teamBScore: 1,
     };
 
-    const updatedMatch: MatchDto = await client.send(MATCHES_PATTERNS.UPDATE_RESULT, resultDto).toPromise();
+    const updatedMatch: MatchDto = await client
+      .send(MATCHES_PATTERNS.UPDATE_RESULT, resultDto)
+      .toPromise();
 
     expect(updatedMatch.status).toBe('completed');
     expect(updatedMatch.result).toEqual({ teamA: 2, teamB: 1 });

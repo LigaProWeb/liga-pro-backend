@@ -9,7 +9,10 @@ import {
 import type {
   CreateMatchDto,
   CreateTournamentDto,
+  GenerateFixtureDto,
   MatchDto,
+  RegisterTeamDto,
+  ReportFixtureResultDto,
   TournamentDto,
 } from '@app/contracts';
 import { firstValueFrom } from 'rxjs';
@@ -58,6 +61,48 @@ export class AppService {
       this.tournamentsClient.send<TournamentDto[]>(
         TOURNAMENTS_PATTERNS.FIND_ALL,
         {},
+      ),
+    );
+  }
+
+  findTournamentById(id: string): Promise<TournamentDto | undefined> {
+    return firstValueFrom(
+      this.tournamentsClient.send<TournamentDto | undefined>(
+        TOURNAMENTS_PATTERNS.FIND_BY_ID,
+        id,
+      ),
+    );
+  }
+
+  registerTournamentTeam(
+    registerTeamDto: RegisterTeamDto,
+  ): Promise<TournamentDto> {
+    return firstValueFrom(
+      this.tournamentsClient.send<TournamentDto>(
+        TOURNAMENTS_PATTERNS.REGISTER_TEAM,
+        registerTeamDto,
+      ),
+    );
+  }
+
+  generateTournamentFixture(
+    generateFixtureDto: GenerateFixtureDto,
+  ): Promise<TournamentDto> {
+    return firstValueFrom(
+      this.tournamentsClient.send<TournamentDto>(
+        TOURNAMENTS_PATTERNS.GENERATE_FIXTURE,
+        generateFixtureDto,
+      ),
+    );
+  }
+
+  reportTournamentFixtureResult(
+    reportFixtureResultDto: ReportFixtureResultDto,
+  ): Promise<TournamentDto> {
+    return firstValueFrom(
+      this.tournamentsClient.send<TournamentDto>(
+        TOURNAMENTS_PATTERNS.REPORT_FIXTURE_RESULT,
+        reportFixtureResultDto,
       ),
     );
   }

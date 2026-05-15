@@ -12,6 +12,7 @@ export const MATCHES_PATTERNS = {
 
 export const MATCHES_EVENTS = {
   CREATED: 'match.created',
+  RESULT_UPDATED: 'match.result_updated',
 } as const;
 
 export type SportType = 'football' | 'padel' | 'volley';
@@ -36,6 +37,14 @@ export interface UpdateMatchDto {
 
 export interface UpdateResultDto {
   id: string;
+  teamAScore: number;
+  teamBScore: number;
+}
+
+export interface MatchResultUpdatedEvent {
+  matchId: string;
+  tournamentId?: string;
+  fixtureId?: string;
   teamAScore: number;
   teamBScore: number;
 }

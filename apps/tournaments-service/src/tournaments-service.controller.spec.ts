@@ -1,4 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NOTIFICATIONS_SERVICE } from '@app/contracts';
+import { of } from 'rxjs';
 import { TournamentsServiceController } from './tournaments-service.controller';
 import { TournamentsServiceService } from './tournaments-service.service';
 
@@ -8,7 +10,15 @@ describe('TournamentsServiceController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [TournamentsServiceController],
-      providers: [TournamentsServiceService],
+      providers: [
+        TournamentsServiceService,
+        {
+          provide: NOTIFICATIONS_SERVICE,
+          useValue: {
+            emit: jest.fn(() => of(true)),
+          },
+        },
+      ],
     }).compile();
 
     tournamentsServiceController = app.get<TournamentsServiceController>(
