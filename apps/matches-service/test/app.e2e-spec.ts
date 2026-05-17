@@ -10,11 +10,14 @@ import { MatchesServiceModule } from './../src/matches-service.module';
 import { MATCHES_PATTERNS, NOTIFICATIONS_SERVICE } from '@app/contracts';
 import type {
   CreateMatchDto,
+  JoinMatchDto,
+  LeaveMatchDto,
   MatchDto,
   UpdateMatchDto,
   UpdateResultDto,
 } from '@app/contracts';
 
+//PRUEBAS E2E: pruebas para toda la aplicación, verificando integración entre componentes y comportamiento esperado en escenarios reales
 describe('MatchesServiceController (e2e)', () => {
   let app: INestApplication;
   let client: ClientProxy;
@@ -57,11 +60,11 @@ describe('MatchesServiceController (e2e)', () => {
 
   it('should create a match', async () => {
     const createDto: CreateMatchDto = {
-      sport: 'football',
+      sportId: 1,
       title: 'Test Match',
       location: 'Stadium',
-      date: '2026-05-15',
-      maxPlayers: 22,
+      matchDate: '2026-05-15T18:00:00Z',
+      maxPlayers: 4,
       organizerId: 'user1',
     };
 
@@ -73,6 +76,8 @@ describe('MatchesServiceController (e2e)', () => {
     expect(match.id).toContain('match-');
     expect(match.title).toBe('Test Match');
     expect(match.status).toBe('open');
+    expect(match.participantIds).toContain('user1');
+    expect(match.currentPlayers).toBe(1);
   });
 
   it('should find all matches', async () => {
@@ -83,14 +88,35 @@ describe('MatchesServiceController (e2e)', () => {
     expect(Array.isArray(matches)).toBe(true);
   });
 
-  it('should update a match', async () => {
-    // First create a match
+  it('should find a match by id', async () => {
     const createDto: CreateMatchDto = {
-      sport: 'football',
+      sportId: 1,
       title: 'Test Match',
       location: 'Stadium',
-      date: '2026-05-15',
-      maxPlayers: 22,
+      matchDate: '2026-05-15T18:00:00Z',
+      maxPlayers: 4,
+      organizerId: 'user1',
+    };
+
+    const match: MatchDto = await client
+      .send(MATCHES_PATTERNS.CREATE, createDto)
+      .toPromise();
+
+    const foundMatch: MatchDto = await client
+      .send(MATCHES_PATTERNS.FIND_BY_ID, match.id)
+      .toPromise();
+
+    expect(foundMatch).toBeDefined();
+    expect(foundMatch.id).toBe(match.id);
+  });
+
+  it('should update a match', async () => {
+    const createDto: CreateMatchDto = {
+      sportId: 1,
+      title: 'Test Match',
+      location: 'Stadium',
+      matchDate: '2026-05-15T18:00:00Z',
+      maxPlayers: 4,
       organizerId: 'user1',
     };
 
@@ -112,14 +138,52 @@ describe('MatchesServiceController (e2e)', () => {
     expect(updatedMatch.location).toBe('New Location');
   });
 
-  it('should delete a match', async () => {
-    // Create a match
+  it('should join and leave a match', async () => {
     const createDto: CreateMatchDto = {
-      sport: 'football',
+      sportId: 1,
+      title: 'Join Match',
+      location: 'Stadium',
+      matchDate: '2026-05-16T18:00:00Z',
+      maxPlayers: 3,
+      organizerId: 'organizer1',
+    };
+
+    const match: MatchDto = await client
+      .send(MATCHES_PATTERNS.CREATE, createDto)
+      .toPromise();
+
+    const joinDto: JoinMatchDto = {
+      matchId: match.id,
+      userId: 'user2',
+    };
+
+    const joinedMatch: MatchDto = await client
+      .send(MATCHES_PATTERNS.JOIN, joinDto)
+      .toPromise();
+
+    expect(joinedMatch.currentPlayers).toBe(2);
+    expect(joinedMatch.participantIds).toContain('user2');
+
+    const leaveDto: LeaveMatchDto = {
+      matchId: match.id,
+      userId: 'user2',
+    };
+
+    const leftMatch: MatchDto = await client
+      .send(MATCHES_PATTERNS.LEAVE, leaveDto)
+      .toPromise();
+
+    expect(leftMatch.currentPlayers).toBe(1);
+    expect(leftMatch.participantIds).not.toContain('user2');
+  });
+
+  it('should delete a match', async () => {
+    const createDto: CreateMatchDto = {
+      sportId: 1,
       title: 'Test Match',
       location: 'Stadium',
-      date: '2026-05-15',
-      maxPlayers: 22,
+      matchDate: '2026-05-15T18:00:00Z',
+      maxPlayers: 4,
       organizerId: 'user1',
     };
 
@@ -127,10 +191,8 @@ describe('MatchesServiceController (e2e)', () => {
       .send(MATCHES_PATTERNS.CREATE, createDto)
       .toPromise();
 
-    // Delete it
     await client.send(MATCHES_PATTERNS.DELETE, match.id).toPromise();
 
-    // Try to find all, should not include the deleted one
     const matches: MatchDto[] = await client
       .send(MATCHES_PATTERNS.FIND_ALL, {})
       .toPromise();
@@ -139,13 +201,12 @@ describe('MatchesServiceController (e2e)', () => {
   });
 
   it('should update result of a match', async () => {
-    // Create a match
     const createDto: CreateMatchDto = {
-      sport: 'football',
+      sportId: 1,
       title: 'Test Match',
       location: 'Stadium',
-      date: '2026-05-15',
-      maxPlayers: 22,
+      matchDate: '2026-05-15T18:00:00Z',
+      maxPlayers: 4,
       organizerId: 'user1',
     };
 
@@ -155,8 +216,8 @@ describe('MatchesServiceController (e2e)', () => {
 
     const resultDto: UpdateResultDto = {
       id: match.id,
-      teamAScore: 2,
-      teamBScore: 1,
+      globalScoreA: 2,
+      globalScoreB: 1,
     };
 
     const updatedMatch: MatchDto = await client
@@ -164,6 +225,7 @@ describe('MatchesServiceController (e2e)', () => {
       .toPromise();
 
     expect(updatedMatch.status).toBe('completed');
-    expect(updatedMatch.result).toEqual({ teamA: 2, teamB: 1 });
+    expect(updatedMatch.globalScoreA).toBe(2);
+    expect(updatedMatch.globalScoreB).toBe(1);
   });
 });
