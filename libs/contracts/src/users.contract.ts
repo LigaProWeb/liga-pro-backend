@@ -9,3 +9,18 @@ export interface UserDto {
   email: string;
   name: string;
 }
+
+export interface LoginUserDto {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponseDto {
+  access_token: string;
+  user: UserDto;
+}
+
+export interface UpdateProfileDto {
+  email?: string;
+  name?: string;
+}
