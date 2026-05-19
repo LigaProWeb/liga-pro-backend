@@ -20,6 +20,7 @@ export const MATCHES_EVENTS = {
   CREATED: 'match.created',
   UPDATED: 'match.updated',
   DELETED: 'match.deleted',
+  CANCELLED: 'match.cancelled',
   RESULT_UPDATED: 'match.result_updated',
 } as const;
 

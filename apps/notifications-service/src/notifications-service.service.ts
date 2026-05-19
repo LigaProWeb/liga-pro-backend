@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  MATCHES_EVENTS,
   TOURNAMENTS_EVENTS,
   type MatchDto,
   type NotificationCreatedEvent,
@@ -11,22 +12,48 @@ export class NotificationsServiceService {
   private readonly notifications: NotificationCreatedEvent[] = [];
 
   createFromMatchCreated(match: MatchDto): NotificationCreatedEvent {
-    const notification: NotificationCreatedEvent = {
-      id: `notification-${Date.now()}`,
-      userId: match.organizerId,
-      title: 'Partido creado',
-      message: `Se creo el partido "${match.title}" en ${match.location}.`,
-      createdAt: new Date().toISOString(),
-      metadata: {
-        event: 'match.created',
-        matchId: match.id,
-      },
-    };
+    return this.createFromMatchEvent(
+      match,
+      MATCHES_EVENTS.CREATED,
+      'Partido creado',
+      `Se creo el partido "${match.title}" en ${match.location}.`,
+    );
+  }
 
-    this.notifications.push(notification);
-    console.log('Notification stored:', notification);
+  createFromMatchUpdated(match: MatchDto): NotificationCreatedEvent {
+    return this.createFromMatchEvent(
+      match,
+      MATCHES_EVENTS.UPDATED,
+      'Partido actualizado',
+      `Se actualizo el partido "${match.title}".`,
+    );
+  }
 
-    return notification;
+  createFromMatchDeleted(match: MatchDto): NotificationCreatedEvent {
+    return this.createFromMatchEvent(
+      match,
+      MATCHES_EVENTS.DELETED,
+      'Partido eliminado',
+      `Se elimino el partido "${match.title}".`,
+    );
+  }
+
+  createFromMatchCancelled(match: MatchDto): NotificationCreatedEvent {
+    return this.createFromMatchEvent(
+      match,
+      MATCHES_EVENTS.CANCELLED,
+      'Partido cancelado',
+      `Se cancelo el partido "${match.title}".`,
+    );
+  }
+
+  createFromMatchResultUpdated(match: MatchDto): NotificationCreatedEvent {
+    return this.createFromMatchEvent(
+      match,
+      MATCHES_EVENTS.RESULT_UPDATED,
+      'Resultado actualizado',
+      `Se cargo el resultado del partido "${match.title}".`,
+    );
   }
 
   createFromTournamentTeamAdvanced(
@@ -64,6 +91,33 @@ export class NotificationsServiceService {
 
   findAll(): NotificationCreatedEvent[] {
     return this.notifications;
+  }
+
+  private createFromMatchEvent(
+    match: MatchDto,
+    eventName: string,
+    title: string,
+    message: string,
+  ): NotificationCreatedEvent {
+    const notification: NotificationCreatedEvent = {
+      id: `notification-${Date.now()}`,
+      userId: match.organizerId,
+      title,
+      message,
+      createdAt: new Date().toISOString(),
+      metadata: {
+        event: eventName,
+        matchId: match.id,
+        status: match.status,
+        globalScoreA: match.globalScoreA,
+        globalScoreB: match.globalScoreB,
+      },
+    };
+
+    this.notifications.push(notification);
+    console.log('Notification stored:', notification);
+
+    return notification;
   }
 
   private createFromTournamentEvent(

@@ -27,13 +27,13 @@ export class MatchesServiceController {
 
   //obtener todos los partidos
   @MessagePattern(MATCHES_PATTERNS.FIND_ALL)
-  findAll(): MatchDto[] {
+  findAll(): Promise<MatchDto[]> {
     return this.matchesServiceService.findAll();
   }
 
   //obtener partido por ID
   @MessagePattern(MATCHES_PATTERNS.FIND_BY_ID)
-  findById(id: string): MatchDto | undefined {
+  findById(id: string): Promise<MatchDto | undefined> {
     return this.matchesServiceService.findById(id);
   }
 

@@ -1,6 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NOTIFICATIONS_SERVICE } from '@app/contracts';
-import { of } from 'rxjs';
 import { MatchesServiceController } from './matches-service.controller';
 import { MatchesServiceService } from './matches-service.service';
 
@@ -13,11 +11,10 @@ describe('MatchesServiceController', () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [MatchesServiceController],
       providers: [
-        MatchesServiceService,
         {
-          provide: NOTIFICATIONS_SERVICE,
+          provide: MatchesServiceService,
           useValue: {
-            emit: jest.fn(() => of(true)),
+            findAll: jest.fn().mockResolvedValue([]),
           },
         },
       ],
@@ -30,8 +27,8 @@ describe('MatchesServiceController', () => {
 
   //PRUEBAS: pruebas para cada método del controlador, verificando comportamiento esperado
   describe('root', () => {
-    it('should start with no matches', () => {
-      expect(matchesServiceController.findAll()).toEqual([]);
+    it('should start with no matches', async () => {
+      await expect(matchesServiceController.findAll()).resolves.toEqual([]);
     });
   });
 });

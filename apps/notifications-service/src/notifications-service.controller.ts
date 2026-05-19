@@ -15,6 +15,26 @@ export class NotificationsServiceController {
     this.notificationsServiceService.createFromMatchCreated(match);
   }
 
+  @EventPattern(MATCHES_EVENTS.UPDATED)
+  handleMatchUpdated(match: MatchDto): void {
+    this.notificationsServiceService.createFromMatchUpdated(match);
+  }
+
+  @EventPattern(MATCHES_EVENTS.DELETED)
+  handleMatchDeleted(match: MatchDto): void {
+    this.notificationsServiceService.createFromMatchDeleted(match);
+  }
+
+  @EventPattern(MATCHES_EVENTS.CANCELLED)
+  handleMatchCancelled(match: MatchDto): void {
+    this.notificationsServiceService.createFromMatchCancelled(match);
+  }
+
+  @EventPattern(MATCHES_EVENTS.RESULT_UPDATED)
+  handleMatchResultUpdated(match: MatchDto): void {
+    this.notificationsServiceService.createFromMatchResultUpdated(match);
+  }
+
   @EventPattern(TOURNAMENTS_EVENTS.TEAM_ADVANCED)
   handleTournamentTeamAdvanced(event: TournamentTeamResultEvent): void {
     this.notificationsServiceService.createFromTournamentTeamAdvanced(event);
