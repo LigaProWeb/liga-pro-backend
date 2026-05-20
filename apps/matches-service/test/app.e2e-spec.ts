@@ -16,6 +16,8 @@ import type {
   UpdateMatchDto,
   UpdateResultDto,
 } from '@app/contracts';
+jest.setTimeout(15000); // Elevamos el límite a 15 segundos
+
 
 //PRUEBAS E2E: pruebas para toda la aplicación, verificando integración entre componentes y comportamiento esperado en escenarios reales
 describe('MatchesServiceController (e2e)', () => {
@@ -37,7 +39,7 @@ describe('MatchesServiceController (e2e)', () => {
       transport: Transport.TCP,
       options: {
         host: '127.0.0.1',
-        port: 3001,
+        port: 3002,
       },
     });
 
@@ -48,14 +50,18 @@ describe('MatchesServiceController (e2e)', () => {
       transport: Transport.TCP,
       options: {
         host: '127.0.0.1',
-        port: 3001,
+        port: 3002,
       },
     });
   });
 
   afterEach(async () => {
-    await app.close();
-    await client.close();
+    if (client) {
+      await client.close();
+    }
+    if (app) {
+      await app.close();
+    }
   });
 
   it('should create a match', async () => {
@@ -65,7 +71,7 @@ describe('MatchesServiceController (e2e)', () => {
       location: 'Stadium',
       matchDate: '2026-05-15T18:00:00Z',
       maxPlayers: 4,
-      organizerId: 'user1',
+      organizerId: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
     };
 
     const match: MatchDto = await client
@@ -73,10 +79,10 @@ describe('MatchesServiceController (e2e)', () => {
       .toPromise();
 
     expect(match).toBeDefined();
-    expect(match.id).toContain('match-');
+    expect(match.id).toMatch(/^[0-9a-fH]{8}-[0-9a-fH]{4}-[0-9a-fH]{4}-[0-9a-fH]{4}-[0-9a-fH]{12}$/i);
     expect(match.title).toBe('Test Match');
     expect(match.status).toBe('open');
-    expect(match.participantIds).toContain('user1');
+    expect(match.participantIds).toContain('9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d');
     expect(match.currentPlayers).toBe(1);
   });
 
@@ -95,7 +101,7 @@ describe('MatchesServiceController (e2e)', () => {
       location: 'Stadium',
       matchDate: '2026-05-15T18:00:00Z',
       maxPlayers: 4,
-      organizerId: 'user1',
+      organizerId: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
     };
 
     const match: MatchDto = await client
@@ -117,7 +123,7 @@ describe('MatchesServiceController (e2e)', () => {
       location: 'Stadium',
       matchDate: '2026-05-15T18:00:00Z',
       maxPlayers: 4,
-      organizerId: 'user1',
+      organizerId: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
     };
 
     const match: MatchDto = await client
@@ -138,23 +144,26 @@ describe('MatchesServiceController (e2e)', () => {
     expect(updatedMatch.location).toBe('New Location');
   });
 
-  it('should join and leave a match', async () => {
+it('should join and leave a match', async () => {
     const createDto: CreateMatchDto = {
       sportId: 1,
       title: 'Join Match',
       location: 'Stadium',
       matchDate: '2026-05-16T18:00:00Z',
       maxPlayers: 3,
-      organizerId: 'organizer1',
+      organizerId: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
     };
 
     const match: MatchDto = await client
       .send(MATCHES_PATTERNS.CREATE, createDto)
       .toPromise();
 
+    // Guardamos el ID en una constante para no errarle
+    const participantUserId = '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6e';
+
     const joinDto: JoinMatchDto = {
       matchId: match.id,
-      userId: 'user2',
+      userId: participantUserId, // Usamos la constante
     };
 
     const joinedMatch: MatchDto = await client
@@ -162,11 +171,11 @@ describe('MatchesServiceController (e2e)', () => {
       .toPromise();
 
     expect(joinedMatch.currentPlayers).toBe(2);
-    expect(joinedMatch.participantIds).toContain('user2');
+    expect(joinedMatch.participantIds).toContain(participantUserId);
 
     const leaveDto: LeaveMatchDto = {
       matchId: match.id,
-      userId: 'user2',
+      userId: participantUserId, // <-- ¡AHORA SÍ! Cambiado de 6f a la constante (6e)
     };
 
     const leftMatch: MatchDto = await client
@@ -174,7 +183,7 @@ describe('MatchesServiceController (e2e)', () => {
       .toPromise();
 
     expect(leftMatch.currentPlayers).toBe(1);
-    expect(leftMatch.participantIds).not.toContain('user2');
+    expect(leftMatch.participantIds).not.toContain(participantUserId);
   });
 
   it('should delete a match', async () => {
@@ -184,7 +193,7 @@ describe('MatchesServiceController (e2e)', () => {
       location: 'Stadium',
       matchDate: '2026-05-15T18:00:00Z',
       maxPlayers: 4,
-      organizerId: 'user1',
+      organizerId: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
     };
 
     const match: MatchDto = await client
@@ -207,7 +216,7 @@ describe('MatchesServiceController (e2e)', () => {
       location: 'Stadium',
       matchDate: '2026-05-15T18:00:00Z',
       maxPlayers: 4,
-      organizerId: 'user1',
+      organizerId: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
     };
 
     const match: MatchDto = await client

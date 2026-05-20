@@ -20,8 +20,8 @@ import { MatchParticipantEntity } from './entities/match-participant.entity';
         host: configService.get<string>('POSTGRES_HOST', 'localhost'),
         port: Number(configService.get<string>('POSTGRES_PORT', '5432')),
         username: configService.get<string>('POSTGRES_USER', 'postgres'),
-        password: configService.get<string>('POSTGRES_PASSWORD', 'postgres'),
-        database: configService.get<string>('POSTGRES_DB', 'liga_pro'),
+        password: configService.get<string>('POSTGRES_PASSWORD', 'postgres'), //ACA IRIA SU PROPIA CONTRASEÑA DE POSTGRES
+        database: configService.get<string>('POSTGRES_DB', 'liga-pro'), //ACA IRIA SU PROPIO NOMBRE DE BASE DE DATOS
         schema: 'matches_svc',
         entities: [MatchEntity, MatchParticipantEntity],
         synchronize: false,
