@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import type { SkillLevel } from '@app/contracts';
 import { UserEntity } from './user.entity';
 
-@Entity({ schema: 'users_svc', name: 'user_sport_pref' })
+@Entity({ schema: 'users_svc', name: 'user_sport_preferences' })
 export class UserSportPrefEntity {
   @PrimaryColumn({ name: 'user_id', type: 'uuid' })
   userId: string;

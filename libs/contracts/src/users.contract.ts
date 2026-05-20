@@ -15,13 +15,14 @@ export const USERS_EVENTS = {
   SPORT_PREFERENCE_UPDATED: 'user.sport_preference_updated',
 } as const;
 
-export type UserRole = 'player' | 'organizer' | 'admin';
+export type UserRole = 'user' | 'super_admin';
 export type SkillLevel = 'beginner' | 'intermediate' | 'advanced';
 
 export interface RegisterUserDto {
   email: string;
   password: string;
   firstName: string;
+  lastName?: string;
   globalRole: UserRole;
   isPublic?: boolean;
 }
@@ -34,7 +35,10 @@ export interface LoginUserDto {
 export interface UserProfileDto {
   userId: string;
   firstName: string;
+  lastName: string;
+  bio?: string;
   isPublic: boolean;
+  rating?: number;
 }
 
 export interface UserSportPreferenceDto {
@@ -60,6 +64,8 @@ export interface UpdateProfileDto {
   userId: string;
   email?: string;
   firstName?: string;
+  lastName?: string;
+  bio?: string;
   isPublic?: boolean;
 }
 

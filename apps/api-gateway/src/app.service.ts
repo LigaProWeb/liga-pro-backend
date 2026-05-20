@@ -13,12 +13,16 @@ import type {
   CreateMatchDto,
   CreateTournamentDto,
   GenerateFixtureDto,
+  JoinMatchDto,
+  LeaveMatchDto,
   LoginUserDto,
   MatchDto,
   RegisterTeamDto,
   RegisterUserDto,
   ReportFixtureResultDto,
   TournamentDto,
+  UpdateMatchDto,
+  UpdateResultDto,
   UpdateProfileDto,
   UpsertSportPreferenceDto,
   UserDto,
@@ -53,6 +57,57 @@ export class AppService {
   findMatches(): Promise<MatchDto[]> {
     return firstValueFrom(
       this.matchesClient.send<MatchDto[]>(MATCHES_PATTERNS.FIND_ALL, {}),
+    );
+  }
+
+  findMatchById(id: string): Promise<MatchDto | undefined> {
+    return firstValueFrom(
+      this.matchesClient.send<MatchDto | undefined>(
+        MATCHES_PATTERNS.FIND_BY_ID,
+        id,
+      ),
+    );
+  }
+
+  updateMatch(updateMatchDto: UpdateMatchDto): Promise<MatchDto> {
+    return firstValueFrom(
+      this.matchesClient.send<MatchDto>(
+        MATCHES_PATTERNS.UPDATE,
+        updateMatchDto,
+      ),
+    );
+  }
+
+  deleteMatch(id: string): Promise<void> {
+    return firstValueFrom(
+      this.matchesClient.send<void>(MATCHES_PATTERNS.DELETE, id),
+    );
+  }
+
+  cancelMatch(id: string): Promise<MatchDto> {
+    return firstValueFrom(
+      this.matchesClient.send<MatchDto>(MATCHES_PATTERNS.CANCEL, id),
+    );
+  }
+
+  joinMatch(joinMatchDto: JoinMatchDto): Promise<MatchDto> {
+    return firstValueFrom(
+      this.matchesClient.send<MatchDto>(MATCHES_PATTERNS.JOIN, joinMatchDto),
+    );
+  }
+
+  leaveMatch(leaveMatchDto: LeaveMatchDto): Promise<MatchDto> {
+    return firstValueFrom(
+      this.matchesClient.send<MatchDto>(MATCHES_PATTERNS.LEAVE, leaveMatchDto),
+    );
+  }
+
+  updateMatchResult(updateResultDto: UpdateResultDto): Promise<MatchDto> {
+    return firstValueFrom(
+      this.matchesClient.send<MatchDto>(
+        MATCHES_PATTERNS.UPDATE_RESULT,
+        updateResultDto,
+      ),
     );
   }
 

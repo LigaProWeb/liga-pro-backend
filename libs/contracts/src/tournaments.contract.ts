@@ -19,14 +19,17 @@ export const TOURNAMENTS_EVENTS = {
   COMPLETED: 'tournament.completed',
 } as const;
 
-export type TournamentFormat = 'single_elimination';
+export type TournamentFormat =
+  | 'league'
+  | 'knockout'
+  | 'group_stage_and_knockout';
 export type TournamentStatus =
   | 'open'
   | 'in_progress'
   | 'completed'
   | 'cancelled';
 export type FixtureStatus = 'pending' | 'completed' | 'cancelled';
-export type RegistrationStatus = 'pending' | 'accepted' | 'rejected';
+export type RegistrationStatus = 'pending' | 'approved' | 'rejected';
 
 export interface CreateTournamentDto {
   name: string;

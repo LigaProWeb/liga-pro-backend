@@ -35,7 +35,7 @@ describe('UsersServiceController', () => {
     usersServiceMock.registerUser.mockResolvedValue({
       id: 'user-1',
       email: 'joaco@test.com',
-      globalRole: 'player',
+      globalRole: 'user',
     });
 
     await expect(
@@ -43,12 +43,12 @@ describe('UsersServiceController', () => {
         email: 'joaco@test.com',
         password: '123456',
         firstName: 'Joaco',
-        globalRole: 'player',
+        globalRole: 'user',
       }),
     ).resolves.toEqual({
       id: 'user-1',
       email: 'joaco@test.com',
-      globalRole: 'player',
+      globalRole: 'user',
     });
   });
 });

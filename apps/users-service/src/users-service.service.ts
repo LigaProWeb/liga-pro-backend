@@ -53,6 +53,7 @@ export class UsersServiceService {
       this.profilesRepository.create({
         userId: user.id,
         firstName: registerUserDto.firstName,
+        lastName: registerUserDto.lastName ?? '',
         isPublic: registerUserDto.isPublic ?? true,
       }),
     );
@@ -109,6 +110,8 @@ export class UsersServiceService {
     const updatedProfile = this.profilesRepository.create({
       userId: updateProfileDto.userId,
       firstName: updateProfileDto.firstName ?? profile?.firstName ?? '',
+      lastName: updateProfileDto.lastName ?? profile?.lastName ?? '',
+      bio: updateProfileDto.bio ?? profile?.bio,
       isPublic: updateProfileDto.isPublic ?? profile?.isPublic ?? true,
     });
 
@@ -170,7 +173,10 @@ export class UsersServiceService {
     return {
       userId: profile.userId,
       firstName: profile.firstName,
+      lastName: profile.lastName,
+      bio: profile.bio ?? undefined,
       isPublic: profile.isPublic,
+      rating: Number(profile.rating),
     };
   }
 

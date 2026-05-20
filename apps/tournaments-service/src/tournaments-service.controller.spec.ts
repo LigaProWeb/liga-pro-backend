@@ -1,6 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NOTIFICATIONS_SERVICE } from '@app/contracts';
-import { of } from 'rxjs';
 import { TournamentsServiceController } from './tournaments-service.controller';
 import { TournamentsServiceService } from './tournaments-service.service';
 
@@ -11,11 +9,10 @@ describe('TournamentsServiceController', () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [TournamentsServiceController],
       providers: [
-        TournamentsServiceService,
         {
-          provide: NOTIFICATIONS_SERVICE,
+          provide: TournamentsServiceService,
           useValue: {
-            emit: jest.fn(() => of(true)),
+            findAll: jest.fn().mockResolvedValue([]),
           },
         },
       ],
@@ -27,8 +24,8 @@ describe('TournamentsServiceController', () => {
   });
 
   describe('root', () => {
-    it('should start with no tournaments', () => {
-      expect(tournamentsServiceController.findAll()).toEqual([]);
+    it('should start with no tournaments', async () => {
+      await expect(tournamentsServiceController.findAll()).resolves.toEqual([]);
     });
   });
 });

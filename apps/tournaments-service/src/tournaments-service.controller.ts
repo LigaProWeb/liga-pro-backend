@@ -18,41 +18,43 @@ export class TournamentsServiceController {
   ) {}
 
   @MessagePattern(TOURNAMENTS_PATTERNS.FIND_ALL)
-  findAll(): TournamentDto[] {
+  findAll(): Promise<TournamentDto[]> {
     return this.tournamentsServiceService.findAll();
   }
 
   @MessagePattern(TOURNAMENTS_PATTERNS.CREATE)
-  create(createTournamentDto: CreateTournamentDto): TournamentDto {
+  create(createTournamentDto: CreateTournamentDto): Promise<TournamentDto> {
     return this.tournamentsServiceService.create(createTournamentDto);
   }
 
   @MessagePattern(TOURNAMENTS_PATTERNS.FIND_BY_ID)
-  findById(id: string): TournamentDto | undefined {
+  findById(id: string): Promise<TournamentDto | undefined> {
     return this.tournamentsServiceService.findById(id);
   }
 
   @MessagePattern(TOURNAMENTS_PATTERNS.REGISTER_TEAM)
-  registerTeam(registerTeamDto: RegisterTeamDto): TournamentDto {
+  registerTeam(registerTeamDto: RegisterTeamDto): Promise<TournamentDto> {
     return this.tournamentsServiceService.registerTeam(registerTeamDto);
   }
 
   @MessagePattern(TOURNAMENTS_PATTERNS.GENERATE_FIXTURE)
-  generateFixture(generateFixtureDto: GenerateFixtureDto): TournamentDto {
+  generateFixture(
+    generateFixtureDto: GenerateFixtureDto,
+  ): Promise<TournamentDto> {
     return this.tournamentsServiceService.generateFixture(generateFixtureDto);
   }
 
   @MessagePattern(TOURNAMENTS_PATTERNS.REPORT_FIXTURE_RESULT)
   reportFixtureResult(
     reportFixtureResultDto: ReportFixtureResultDto,
-  ): TournamentDto {
+  ): Promise<TournamentDto> {
     return this.tournamentsServiceService.reportFixtureResult(
       reportFixtureResultDto,
     );
   }
 
   @EventPattern(MATCHES_EVENTS.RESULT_UPDATED)
-  handleMatchResultUpdated(event: MatchResultUpdatedEvent): void {
-    this.tournamentsServiceService.handleMatchResultUpdated(event);
+  handleMatchResultUpdated(event: MatchResultUpdatedEvent): Promise<void> {
+    return this.tournamentsServiceService.handleMatchResultUpdated(event);
   }
 }

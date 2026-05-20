@@ -1,14 +1,26 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import type {
   AuthResponseDto,
   CreateMatchDto,
   CreateTournamentDto,
+  JoinMatchDto,
+  LeaveMatchDto,
   LoginUserDto,
   RegisterTeamDto,
   RegisterUserDto,
   ReportFixtureResultDto,
   MatchDto,
   TournamentDto,
+  UpdateMatchDto,
+  UpdateResultDto,
   UpdateProfileDto,
   UpsertSportPreferenceDto,
   UserDto,
@@ -20,11 +32,6 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
-
   @Post('matches')
   createMatch(@Body() createMatchDto: CreateMatchDto): Promise<MatchDto> {
     return this.appService.createMatch(createMatchDto);
@@ -33,6 +40,65 @@ export class AppController {
   @Get('matches')
   findMatches(): Promise<MatchDto[]> {
     return this.appService.findMatches();
+  }
+
+  @Get('matches/:id')
+  findMatchById(@Param('id') id: string): Promise<MatchDto | undefined> {
+    return this.appService.findMatchById(id);
+  }
+
+  @Put('matches/:id')
+  updateMatch(
+    @Param('id') id: string,
+    @Body() updateMatchDto: Omit<UpdateMatchDto, 'id'>,
+  ): Promise<MatchDto> {
+    return this.appService.updateMatch({
+      id,
+      ...updateMatchDto,
+    });
+  }
+
+  @Delete('matches/:id')
+  deleteMatch(@Param('id') id: string): Promise<void> {
+    return this.appService.deleteMatch(id);
+  }
+
+  @Post('matches/:id/cancel')
+  cancelMatch(@Param('id') id: string): Promise<MatchDto> {
+    return this.appService.cancelMatch(id);
+  }
+
+  @Post('matches/:id/join')
+  joinMatch(
+    @Param('id') matchId: string,
+    @Body() joinMatchDto: Omit<JoinMatchDto, 'matchId'>,
+  ): Promise<MatchDto> {
+    return this.appService.joinMatch({
+      matchId,
+      ...joinMatchDto,
+    });
+  }
+
+  @Post('matches/:id/leave')
+  leaveMatch(
+    @Param('id') matchId: string,
+    @Body() leaveMatchDto: Omit<LeaveMatchDto, 'matchId'>,
+  ): Promise<MatchDto> {
+    return this.appService.leaveMatch({
+      matchId,
+      ...leaveMatchDto,
+    });
+  }
+
+  @Put('matches/:id/result')
+  updateMatchResult(
+    @Param('id') id: string,
+    @Body() updateResultDto: Omit<UpdateResultDto, 'id'>,
+  ): Promise<MatchDto> {
+    return this.appService.updateMatchResult({
+      id,
+      ...updateResultDto,
+    });
   }
 
   @Post('tournaments')
