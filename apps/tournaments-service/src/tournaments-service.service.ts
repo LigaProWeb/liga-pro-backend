@@ -158,8 +158,8 @@ export class TournamentsServiceService {
     this.reportFixtureResult({
       tournamentId: event.tournamentId,
       fixtureId: event.fixtureId,
-      globalScoreA: event.teamAScore,
-      globalScoreB: event.teamBScore,
+      globalScoreA: event.globalScoreA ?? 0,
+      globalScoreB: event.globalScoreB ?? 0,
     });
   }
 

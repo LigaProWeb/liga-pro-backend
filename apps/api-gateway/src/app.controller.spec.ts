@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MATCHES_SERVICE, TOURNAMENTS_SERVICE } from '@app/contracts';
+import {
+  MATCHES_SERVICE,
+  TOURNAMENTS_SERVICE,
+  USERS_SERVICE,
+} from '@app/contracts';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -19,6 +23,12 @@ describe('AppController', () => {
         },
         {
           provide: TOURNAMENTS_SERVICE,
+          useValue: {
+            send: jest.fn(),
+          },
+        },
+        {
+          provide: USERS_SERVICE,
           useValue: {
             send: jest.fn(),
           },

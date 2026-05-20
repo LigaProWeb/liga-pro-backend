@@ -5,15 +5,24 @@ import {
   MATCHES_SERVICE,
   TOURNAMENTS_PATTERNS,
   TOURNAMENTS_SERVICE,
+  USERS_PATTERNS,
+  USERS_SERVICE,
 } from '@app/contracts';
 import type {
+  AuthResponseDto,
   CreateMatchDto,
   CreateTournamentDto,
   GenerateFixtureDto,
+  LoginUserDto,
   MatchDto,
   RegisterTeamDto,
+  RegisterUserDto,
   ReportFixtureResultDto,
   TournamentDto,
+  UpdateProfileDto,
+  UpsertSportPreferenceDto,
+  UserDto,
+  UserSportPreferenceDto,
 } from '@app/contracts';
 import { firstValueFrom } from 'rxjs';
 
@@ -24,6 +33,8 @@ export class AppService {
     private readonly matchesClient: ClientProxy,
     @Inject(TOURNAMENTS_SERVICE)
     private readonly tournamentsClient: ClientProxy,
+    @Inject(USERS_SERVICE)
+    private readonly usersClient: ClientProxy,
   ) {}
 
   getHello(): string {
@@ -103,6 +114,56 @@ export class AppService {
       this.tournamentsClient.send<TournamentDto>(
         TOURNAMENTS_PATTERNS.REPORT_FIXTURE_RESULT,
         reportFixtureResultDto,
+      ),
+    );
+  }
+
+  registerUser(registerUserDto: RegisterUserDto): Promise<UserDto> {
+    return firstValueFrom(
+      this.usersClient.send<UserDto>(USERS_PATTERNS.REGISTER, registerUserDto),
+    );
+  }
+
+  loginUser(loginUserDto: LoginUserDto): Promise<AuthResponseDto> {
+    return firstValueFrom(
+      this.usersClient.send<AuthResponseDto>(
+        USERS_PATTERNS.LOGIN,
+        loginUserDto,
+      ),
+    );
+  }
+
+  findUserById(id: string): Promise<UserDto | undefined> {
+    return firstValueFrom(
+      this.usersClient.send<UserDto | undefined>(USERS_PATTERNS.FIND_BY_ID, id),
+    );
+  }
+
+  updateUserProfile(updateProfileDto: UpdateProfileDto): Promise<UserDto> {
+    return firstValueFrom(
+      this.usersClient.send<UserDto>(
+        USERS_PATTERNS.UPDATE_PROFILE,
+        updateProfileDto,
+      ),
+    );
+  }
+
+  upsertUserSportPreference(
+    upsertSportPreferenceDto: UpsertSportPreferenceDto,
+  ): Promise<UserSportPreferenceDto> {
+    return firstValueFrom(
+      this.usersClient.send<UserSportPreferenceDto>(
+        USERS_PATTERNS.UPSERT_SPORT_PREFERENCE,
+        upsertSportPreferenceDto,
+      ),
+    );
+  }
+
+  findUserSportPreferences(userId: string): Promise<UserSportPreferenceDto[]> {
+    return firstValueFrom(
+      this.usersClient.send<UserSportPreferenceDto[]>(
+        USERS_PATTERNS.FIND_SPORT_PREFERENCES,
+        userId,
       ),
     );
   }

@@ -55,6 +55,11 @@ export interface UpdateResultDto {
   globalScoreB: number;
 }
 
+export interface MatchResultUpdatedEvent extends MatchDto {
+  tournamentId?: string;
+  fixtureId?: string;
+}
+
 //DTOs para unirse y salir de un partido
 export interface JoinMatchDto {
   matchId: string;
